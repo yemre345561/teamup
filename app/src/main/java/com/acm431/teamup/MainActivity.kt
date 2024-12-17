@@ -1,47 +1,49 @@
 package com.acm431.teamup
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.acm431.teamup.ui.theme.TeamUpTheme
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import android.widget.LinearLayout
+import android.view.Gravity
+import android.widget.Toast
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            TeamUpTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+
+        // Root layout - LinearLayout
+        val linearLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            setPadding(16, 16, 16, 16)
+        }
+
+        // Student Button
+        val btnStudent = Button(this).apply {
+            text = "Go to Student Page"
+            setOnClickListener {
+                Toast.makeText(this@MainActivity, "Going to Student Page", Toast.LENGTH_SHORT).show()
+                // Add logic to navigate to Student Activity
             }
         }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+        // Investor Button
+        val btnInvestor = Button(this).apply {
+            text = "Go to Investor Page"
+            setOnClickListener {
+                Toast.makeText(this@MainActivity, "Going to Investor Page", Toast.LENGTH_SHORT).show()
+                // Add logic to navigate to Investor Activity
+            }
+        }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TeamUpTheme {
-        Greeting("Android idil")
+        // Add buttons to the LinearLayout
+        linearLayout.addView(btnStudent)
+        linearLayout.addView(btnInvestor)
+
+        // Set the layout to the activity
+        setContentView(linearLayout)
     }
 }
