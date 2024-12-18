@@ -1,3 +1,7 @@
+package com.example.myapp
+
+import Project
+import ProjectAdapter
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,8 +17,8 @@ class MainActivity : AppCompatActivity() {
 
 
         val projectList = listOf(
-            Project("Joshua Smith", "Project Description", R.drawable.ic_project, 234, 32),
-            Project("Joshua Smith", "Student Description", R.drawable.ic_project, 234, 32)
+            Project("Joshua Smith", "Project Description", R.drawable.ic_pro, 234, 32),
+            Project("Joshua Smith", "Student Description", R.drawable.ic_pro, 234, 32)
         )
 
         recyclerView.layoutManager = LinearLayoutManager(this)
