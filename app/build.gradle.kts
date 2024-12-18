@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.acm431.teamup"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.acm431.teamup"
