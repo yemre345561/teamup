@@ -4,13 +4,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.acm431.teamup.R
 
 class ProjectAdapter(private val projectList: List<Project>) :
     RecyclerView.Adapter<ProjectAdapter.ProjectViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_project, parent, false)
+            .inflate(R.layout.item_card, parent, false)
         return ProjectViewHolder(view)
     }
 

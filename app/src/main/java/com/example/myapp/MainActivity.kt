@@ -1,6 +1,7 @@
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.acm431.teamup.R
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
@@ -10,7 +11,7 @@ class MainActivity : AppCompatActivity() {
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
 
-        // Test verisi ekle
+
         val projectList = listOf(
             Project("Joshua Smith", "Project Description", R.drawable.ic_project, 234, 32),
             Project("Joshua Smith", "Student Description", R.drawable.ic_project, 234, 32)
