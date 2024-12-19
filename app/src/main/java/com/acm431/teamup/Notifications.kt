@@ -61,16 +61,15 @@ fun NotificationsPage() {
         ) {
             Box(
                 modifier = Modifier
-                    .width(95.dp) // Narrow width of the box
-                    .background(Color(0xFF173251)), // Background color
-                    //.padding(top = 0.dp, bottom = 0.dp), // Add padding inside the box
+                    .fillMaxWidth()
+                    .background(Color(0xFF173251))
+                    .padding(vertical = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.teamup_logo), // Replace with your logo
+                    painter = painterResource(id = R.drawable.teamup_logo),
                     contentDescription = "TeamUp Logo",
-                    modifier = Modifier
-                        .size(100.dp) // Adjust logo size
+                    modifier = Modifier.height(50.dp)
                 )
             }
         }
@@ -80,6 +79,7 @@ fun NotificationsPage() {
 
         // Notification List
         NotificationList()
+
     }
 }
 
@@ -112,7 +112,10 @@ fun NotificationList() {
     val notifications = List(7) { "Placeholder uploaded an update" }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 6.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         notifications.forEach { notification ->
             NotificationItem(notification)
@@ -168,9 +171,8 @@ fun BottomNavigationBar() {
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
-                //.background(Color(0xFF173251),RoundedCornerShape(10.dp))
-                //.padding(1.dp), // Add spacing
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = { /* Navigate to Home */ }) {
                 Icon(
@@ -178,7 +180,7 @@ fun BottomNavigationBar() {
                     contentDescription = "Home",
                     tint = Color(0xFFFEFDF6),
                     modifier = Modifier
-                        .size(100.dp) // Adjust logo size
+                        .size(50.dp) // Adjust logo size
                         .background(Color(0xFF173251))
                 )
             }
@@ -188,7 +190,7 @@ fun BottomNavigationBar() {
                     contentDescription = "Search",
                     tint = Color(0xFFFEFDF6),
                     modifier = Modifier
-                        .size(100.dp) // Adjust logo size
+                        .size(50.dp) // Adjust logo size
                 )
             }
             IconButton(onClick = { /* Add content */ }) {
@@ -197,18 +199,27 @@ fun BottomNavigationBar() {
                     contentDescription = "Add",
                     tint = Color(0xFFFEFDF6),
                     modifier = Modifier
-                        .size(100.dp) // Adjust logo size
+                        .size(50.dp) // Adjust logo size
                 )
             }
-            IconButton(onClick = { /* Current screen */ }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.notifications),
-                    contentDescription = "Notifications",
-                    tint = Color(0xFF173251),
+            IconButton(onClick = { /* Notification screen */ },
+                modifier = Modifier
+                    .size(56.dp) // Make the white circle larger
+            ) {
+                Box(
                     modifier = Modifier
-                        .size(100.dp) // Adjust logo size
-                        .background(Color(0xFFFEFDF6), shape = CircleShape)
-                )
+                        .size(56.dp) // Make the white circle larger
+                        .clip(CircleShape)
+                        .background(Color(0xFFFEFDF6)), // White circular background
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.notifications),
+                        contentDescription = "Notifications",
+                        tint = Color(0xFF173251), // Darker notification icon color
+                        modifier = Modifier.size(43.dp) // Icon size remains the same
+                    )
+                }
             }
             IconButton(onClick = { /* Profile screen */ }) {
                 Icon(
@@ -216,7 +227,7 @@ fun BottomNavigationBar() {
                     contentDescription = "Profile",
                     tint = Color(0xFFFEFDF6),
                     modifier = Modifier
-                        .size(100.dp) // Adjust logo size
+                        .size(50.dp) // Adjust logo size
                 )
             }
         }
