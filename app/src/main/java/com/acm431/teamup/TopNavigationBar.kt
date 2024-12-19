@@ -15,44 +15,46 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun TopNavigationBar() {
+    // Container for the top navigation bar
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp) // Reduced height for better proportions
+            .height(70.dp) // Adjust height for better layout
             .background(Color(0xFF0E2C47)), // Dark blue background
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
-        // Text and Logo
-        Row(
-            verticalAlignment = Alignment.CenterVertically
+        // Logo and Text Column
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(end = 8.dp) // Spacing between text and logo
-            ) {
-                Text(
-                    text = "TEAM",
-                    color = Color(0xFFF8EECF), // Light cream color
-                    fontSize = 20.sp, // Reduced font size
-                    style = MaterialTheme.typography.labelLarge
-                )
-                Text(
-                    text = "UP",
-                    color = Color(0xFFF8EECF), // Light cream color
-                    fontSize = 20.sp, // Reduced font size
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
-
-            Image(
-                painter = painterResource(id = R.drawable.teamup_logo2), // Replace with your logo resource
-                contentDescription = "Team Up Logo",
-                modifier = Modifier
-                    .size(60.dp), // Smaller logo size
-                contentScale = ContentScale.Fit
+            // "TEAM" text
+            Text(
+                text = "TEAM",
+                color = Color(0xFFF8EECF), // Light cream color
+                fontSize = 18.sp, // Slightly reduced font size for better balance
+                style = MaterialTheme.typography.labelLarge
+            )
+            // "UP" text
+            Text(
+                text = "UP",
+                color = Color(0xFFF8EECF), // Light cream color
+                fontSize = 18.sp, // Matching font size with "TEAM"
+                style = MaterialTheme.typography.labelLarge
             )
         }
+
+        Spacer(modifier = Modifier.width(8.dp)) // Space between text and logo
+
+        // Logo Image
+        Image(
+            painter = painterResource(id = R.drawable.teamup_logo2), // Ensure the logo resource is available
+            contentDescription = "Team Up Logo",
+            modifier = Modifier
+                .size(50.dp), // Slightly reduced size for proportion
+            contentScale = ContentScale.Fit
+        )
     }
 }
 

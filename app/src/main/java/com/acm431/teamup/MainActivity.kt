@@ -25,7 +25,7 @@ fun MainScreen() {
 
     NavHost(
         navController = navController,
-        startDestination = "login" // Adjust to start with "termsAndConditions" for testing if needed
+        startDestination = "login" // Adjust as needed for testing
     ) {
         // Login Screen
         composable("login") {
@@ -76,13 +76,18 @@ fun MainScreen() {
             ChangePasswordScreen(navController = navController)
         }
 
+        // Notifications Screen
+        composable("notifications") {
+            NotificationsPage(navController = navController)
+        }
+
         // Terms and Conditions Screen
         composable("termsAndConditions") {
             TermsAndConditionsScreen(navController = navController)
         }
-
     }
 }
+
 
 
 
