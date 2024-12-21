@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.acm431.teamup"
-    compileSdk = 35
+    namespace = "com.example.teamup"
+    compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.acm431.teamup"
+        applicationId = "com.example.teamup"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
@@ -52,8 +52,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.recyclerview)
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
+
     // Jetpack Compose Libraries
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
@@ -62,10 +61,7 @@ dependencies {
     implementation(libs.androidx.material3)
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.8.5")
-    implementation(libs.androidx.navigation.runtime.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.support.annotations)
+    implementation("androidx.navigation:navigation-compose:2.5.3")
 
     // Testing
     testImplementation(libs.junit)
@@ -76,4 +72,3 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
-
