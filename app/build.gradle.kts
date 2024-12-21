@@ -62,6 +62,7 @@ dependencies {
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation(libs.androidx.appcompat)
 
     // Testing
     testImplementation(libs.junit)
