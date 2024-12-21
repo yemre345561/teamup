@@ -19,7 +19,6 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,33 +31,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 @Composable
 fun NotificationsPage() {
-    Scaffold(
-        bottomBar = { BottomNavigationBar() }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-                .fillMaxWidth()
-                .background(Color(0xFFFEFDF6))
-        ) { }
-    }
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFFEFDF6))
     ) {
-        // Top Section with Logo and Background Color
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF173251)) // Set background color
-                .padding(top = 0.dp, bottom = 0.dp), // Add spacing
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
         ) {
+            // Top Section with Logo and Background Color
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -72,14 +56,21 @@ fun NotificationsPage() {
                     modifier = Modifier.height(50.dp)
                 )
             }
+
+            // Notifications Header
+            NotificationsHeader()
+
+            // Notification List
+            NotificationList()
         }
 
-        // Notifications Header
-        NotificationsHeader()
-
-        // Notification List
-        NotificationList()
-
+        // Bottom Navigation Bar pinned to the bottom
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+        ) {
+            BottomNavigationBar()
+        }
     }
 }
 

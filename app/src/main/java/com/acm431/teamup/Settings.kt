@@ -33,125 +33,136 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun SettingsPage() {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF7F5E9)) // Cream background
     ) {
-        // Top Bar with TeamUp Logo and Settings Icon
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF173251))
-                .padding(vertical = 16.dp),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.teamup_logo),
-                contentDescription = "TeamUp Logo",
-                modifier = Modifier.height(50.dp) // Adjust the size as necessary
-            )
-
-            // Settings Icon in a White Circle
+            // Top Bar with TeamUp Logo and Settings Icon
             Box(
                 modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 16.dp)
-                    .size(40.dp)
-                    .background(Color(0xFFF7F5E9), shape = CircleShape),
+                    .fillMaxWidth()
+                    .background(Color(0xFF173251))
+                    .padding(vertical = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.settings),
-                    contentDescription = "Settings Icon",
-                    tint = Color(0xFF173251),
-                    modifier = Modifier.size(34.dp)
+                Image(
+                    painter = painterResource(id = R.drawable.teamup_logo),
+                    contentDescription = "TeamUp Logo",
+                    modifier = Modifier.height(50.dp) // Adjust the size as necessary
+                )
+
+                // Settings Icon in a White Circle
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 16.dp)
+                        .size(40.dp)
+                        .background(Color(0xFFF7F5E9), shape = CircleShape)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.settings),
+                        contentDescription = "Settings Icon",
+                        tint = Color(0xFF173251),
+                        modifier = Modifier
+                            .size(34.dp)
+                            .align(Alignment.Center)
+                    )
+                }
+            }
+
+            // Title Section
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Settings",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF173251),
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(bottom = 4.dp) // Space between text and underline
+                )
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = 4.dp),
+                    thickness = 2.dp,
+                    color = Color(0xFF173251)
+                )
+            }
+
+            // Settings Options
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                SettingsOptionItem(
+                    title = "Saved Posts",
+                    iconId = R.drawable.bookmark,
+                    onClick = { /* TODO: Navigate to Saved Posts */ }
+                )
+                HorizontalDivider(
+                    color = Color(0xFF173251),
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(vertical = 1.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                SettingsOptionItem(
+                    title = "Change Log In Information",
+                    iconId = R.drawable.account_circle,
+                    onClick = { /* TODO: Navigate to Change Log In Info */ }
+                )
+                HorizontalDivider(
+                    color = Color(0xFF173251),
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(vertical = 1.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                SettingsOptionItem(
+                    title = "Terms and Conditions",
+                    iconId = R.drawable.article,
+                    onClick = { /* TODO: Navigate to Terms and Conditions */ }
+                )
+                HorizontalDivider(
+                    color = Color(0xFF173251),
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(vertical = 1.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                SettingsOptionItem(
+                    title = "Log Out",
+                    iconId = R.drawable.logout,
+                    onClick = { /* TODO: Handle Log Out */ }
+                )
+                HorizontalDivider(
+                    color = Color(0xFF173251),
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(vertical = 1.dp)
                 )
             }
         }
 
-        // Title Section
-        Column(
+        // Bottom Navigation Bar pinned to the bottom
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .align(Alignment.BottomCenter)
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Settings",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color(0xFF173251),
-                modifier = Modifier.align(Alignment.Start)
-            )
-            HorizontalDivider(
-                color = Color(0xFF173251),
-                thickness = 2.dp,
-                modifier = Modifier.padding(top = 4.dp)
-            )
+            BottomNavigationBar2()
         }
-
-        // Settings Options
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SettingsOptionItem(
-                title = "Saved Posts",
-                iconId = R.drawable.bookmark,
-                onClick = { /* TODO: Navigate to Saved Posts */ }
-            )
-            HorizontalDivider(
-                color = Color(0xFF173251),
-                thickness = 1.dp,
-                modifier = Modifier.padding(vertical = 1.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SettingsOptionItem(
-                title = "Change Log In Information",
-                iconId = R.drawable.account_circle,
-                onClick = { /* TODO: Navigate to Change Log In Info */ }
-            )
-            HorizontalDivider(
-                color = Color(0xFF173251),
-                thickness = 1.dp,
-                modifier = Modifier.padding(vertical = 1.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SettingsOptionItem(
-                title = "Terms and Conditions",
-                iconId = R.drawable.article,
-                onClick = { /* TODO: Navigate to Terms and Conditions */ }
-            )
-            HorizontalDivider(
-                color = Color(0xFF173251),
-                thickness = 1.dp,
-                modifier = Modifier.padding(vertical = 1.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SettingsOptionItem(
-                title = "Log Out",
-                iconId = R.drawable.logout,
-                onClick = { /* TODO: Handle Log Out */ }
-            )
-            HorizontalDivider(
-                color = Color(0xFF173251),
-                thickness = 1.dp,
-                modifier = Modifier.padding(vertical = 1.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1f)) // Push bottom navigation to the bottom
-
-        // Bottom Navigation Bar
-        BottomNavigationBar2()
     }
 }
 
