@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
@@ -42,21 +43,54 @@ fun SettingsPage() {
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            // Top Bar with TeamUp Logo and Settings Icon
+            // Top Bar with TeamUp Text, Logo, and Settings Icon
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color(0xFF173251))
-                    .padding(vertical = 16.dp),
-                contentAlignment = Alignment.Center
+                    .padding(vertical = 12.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.teamup_logo),
-                    contentDescription = "TeamUp Logo",
-                    modifier = Modifier.height(50.dp) // Adjust the size as necessary
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    // TeamUp Text and Logo
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                    ) {
+                        // Text: "TEAM" on top and "UP" below
+                        Column(
+                            horizontalAlignment = Alignment.End, // Align text closer to the logo
+                            modifier = Modifier.padding(end = 1.dp) // Add spacing
+                        ) {
+                            Text(
+                                text = "TEAM",
+                                color = Color(0xFFFEFDF6), // Cream color
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "UP",
+                                color = Color(0xFFFEFDF6), // Cream color
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
 
-                // Settings Icon in a White Circle
+                        // Logo
+                        Image(
+                            painter = painterResource(id = R.drawable.tu_background_02),
+                            contentDescription = "TeamUp Logo",
+                            modifier = Modifier
+                                .height(50.dp) // Adjusted size
+                                .width(50.dp) // Ensured consistent width
+                        )
+                    }
+                }
+
+                // Settings Icon
                 Box(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)

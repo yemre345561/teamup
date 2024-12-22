@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,19 +43,47 @@ fun NotificationsPage() {
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            // Top Section with Logo and Background Color
+            // Top Section with Text and Logo
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color(0xFF173251))
-                    .padding(vertical = 16.dp),
+                    .padding(vertical = 12.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.teamup_logo),
-                    contentDescription = "TeamUp Logo",
-                    modifier = Modifier.height(50.dp)
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    // Text: "TEAM" on top and "UP" below
+                    Column(
+                        horizontalAlignment = Alignment.End, // Align closer to the logo
+                        modifier = Modifier.padding(end = 1.dp) // Minimal space between text and logo
+                    ) {
+                        Text(
+                            text = "TEAM",
+                            color = Color(0xFFFEFDF6), // Cream color
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "UP",
+                            color = Color(0xFFFEFDF6), // Cream color
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    // Logo
+                    Image(
+                        painter = painterResource(id = R.drawable.tu_background_02),
+                        contentDescription = "TeamUp Logo",
+                        modifier = Modifier
+                            .height(50.dp) // Reduced height for the logo
+                            .width(50.dp) // Ensured width matches height
+                    )
+                }
             }
 
             // Notifications Header
