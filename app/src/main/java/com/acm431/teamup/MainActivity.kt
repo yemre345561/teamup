@@ -29,7 +29,7 @@ fun MainScreen() {
             HomeScreen(navController = navController)
         }
         composable("search") {
-            // SearchScreen(navController)
+             SearchScreen(navController = navController)
         }
         composable("sharePost") {
             SharePostScreen(navController = navController)

@@ -7,4 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="main_color_for_view">#0b2d48</color>
+    <color name="acik_mavi">#18517e</color>
+    <color name="page_color">#fffbef</color>
 </resources>

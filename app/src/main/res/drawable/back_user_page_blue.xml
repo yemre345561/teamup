@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Arka plan rengi -->
+    <solid android:color="@color/acik_mavi" /> <!-- Mavi renk (#0000FF) -->
+
+    <!-- Köşe yarıçapı (kenarları yumuşatma) -->
+    <corners android:radius="16dp" />
+
+</shape>

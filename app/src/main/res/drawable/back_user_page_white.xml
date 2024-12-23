@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Siyah üçgen -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M0,100 L100,0 L100,100 Z" />
+
+    <!-- Beyaz üçgen -->
+    <path
+        android:fillColor="@color/page_color"
+        android:pathData="M0,100 L100,0 L0,0 Z" />
+
+</vector>
