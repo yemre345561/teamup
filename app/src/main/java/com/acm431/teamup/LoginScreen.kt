@@ -23,7 +23,7 @@ fun LoginScreen(navController: NavHostController) {
     var password by remember { mutableStateOf("") }
 
     // Correct Background Color
-    val backgroundColor = Color(0xFFF8EECF) // Slightly lighter shade
+    val backgroundColor = Color(0xFFFFFCEF) // Slightly lighter shade
     val inputBackground = Color(0xFFD2E4F3) // Light blue input fields
     val primaryBlue = Color(0xFF274472)     // Dark blue for button and text
 

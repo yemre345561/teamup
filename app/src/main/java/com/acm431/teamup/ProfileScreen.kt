@@ -1,107 +1,156 @@
 package com.acm431.teamup
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 @Composable
 fun ProfileScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
-            ProfileTopBar(navController = navController) // Top bar with settings icon
+            ProfileTopBar(navController = navController) // Updated top bar with centered logo and name
         },
-        bottomBar = { BottomNavigationBar(navController) } // Use BottomNavigationBar
+        bottomBar = { BottomNavigationBar(navController) } // Bottom navigation bar
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .background(Color(0xFFFFFCEF)) // Light cream background
                 .padding(16.dp)
         ) {
-            ProfileContent()
+            ProfileContent(navController) // Profile content
         }
     }
 }
 
+// **Top Navigation Bar (Centered Logo and App Name with Settings Icon)**
 @Composable
 fun ProfileTopBar(navController: NavHostController) {
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF274472))
-            .padding(vertical = 16.dp, horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .height(70.dp) // Height for the top bar
+            .background(Color(0xFF0E2C47)) // Dark blue background
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.Center
     ) {
-        // Title
-        Text(
-            text = "TEAM UP - Profile",
-            style = MaterialTheme.typography.headlineMedium.copy(fontSize = 24.sp),
-            color = Color.White
-        )
-
-        // Settings Icon
-        IconButton(onClick = { navController.navigate("settings") }) {
-            Icon(
-                imageVector = Icons.Filled.Settings, // Explicitly use imageVector
-                contentDescription = "Settings",
-                tint = Color.White
+        // **Centered Content (Logo and App Name)**
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "TEAM",
+                    color = Color(0xFFF8EECF), // Light cream color
+                    fontSize = 18.sp,
+                    style = MaterialTheme.typography.labelLarge
+                )
+                Text(
+                    text = "UP",
+                    color = Color(0xFFF8EECF), // Light cream color
+                    fontSize = 18.sp,
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp)) // Space between text and logo
+            Image(
+                painter = painterResource(id = R.drawable.teamup_logo2), // Replace with your logo
+                contentDescription = "Team Up Logo",
+                modifier = Modifier.size(50.dp), // Adjust size
+                contentScale = ContentScale.Fit
             )
+        }
+
+        // **Settings Icon (Top-Right Corner)**
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 8.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            IconButton(onClick = { navController.navigate("settings") }) {
+                Icon(
+                    imageVector = Icons.Filled.Settings, // Settings icon
+                    contentDescription = "Settings",
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
         }
     }
 }
 
+// **Profile Content**
 @Composable
-fun ProfileContent() {
+fun ProfileContent(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // **Profile Picture Placeholder**
         Box(
             modifier = Modifier
                 .size(120.dp)
-                .background(Color.Gray, shape = RoundedCornerShape(50)),
+                .background(Color.Gray, shape = CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "Profile\nPicture",
                 color = Color.White,
                 style = MaterialTheme.typography.bodySmall,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                textAlign = TextAlign.Center
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
 
+        // **Name and Role**
         Text(
             text = "Joshua Smith",
             style = MaterialTheme.typography.headlineMedium.copy(fontSize = 24.sp),
             color = Color.Black
         )
         Text(
-            text = "Investor",
+            text = "Investor", // Replace based on user type
             style = MaterialTheme.typography.bodySmall,
             color = Color.Gray
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        ProfileInfoCard(title = "Personal Info", content = "Your personal information will be displayed here.")
+        // **Personal Info Card**
+        ProfileInfoCard(
+            title = "Personal Info",
+            content = "Your personal information will be displayed here."
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
-        ProfileInfoCard(title = "CV", content = "Uploaded CVs will be displayed here.")
+        // **CV Card**
+        ProfileInfoCard(
+            title = "CV",
+            content = "Uploaded CVs will be displayed here."
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
+        // **Posts Section**
         Text(
             text = "Posts",
             style = MaterialTheme.typography.headlineMedium.copy(fontSize = 20.sp),
@@ -120,6 +169,7 @@ fun ProfileContent() {
     }
 }
 
+// **Reusable Info Card Component**
 @Composable
 fun ProfileInfoCard(title: String, content: String) {
     Card(
@@ -143,6 +193,7 @@ fun ProfileInfoCard(title: String, content: String) {
     }
 }
 
+// **Reusable Post Item Component**
 @Composable
 fun ProfilePostItem(
     username: String,
@@ -176,6 +227,10 @@ fun ProfilePostItem(
         }
     }
 }
+
+
+
+
 
 
 

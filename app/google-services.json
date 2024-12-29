@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "87238085110",
+    "project_id": "teamup-acm431",
+    "storage_bucket": "teamup-acm431.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87238085110:android:4230d2d32266bbe4025fd7",
+        "android_client_info": {
+          "package_name": "com.acm431.teamup"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhY_hsA5Ni1D2-9p6AwUFddVszFVLgGc0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

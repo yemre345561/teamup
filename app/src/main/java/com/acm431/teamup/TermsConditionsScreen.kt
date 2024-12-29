@@ -25,12 +25,12 @@ fun TermsAndConditionsScreen(navController: NavHostController) {
                 title = "Terms and Conditions"
             )
         },
-        bottomBar = { BottomNavigationBar(navController = navController) }
+        bottomBar = { BottomNavigationBar(navController = navController) } // Bottom navigation bar
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF8EECF))
+                .background(Color(0xFFFFFCEF)) // Light cream background
                 .padding(innerPadding)
         ) {
             Column(
@@ -75,7 +75,7 @@ fun TermsAndConditionsScreen(navController: NavHostController) {
                         - TeamUp reserves the right to update these terms and conditions at any time. Users will be notified of significant changes, and continued use of the platform constitutes acceptance of these updates.
 
                         **9. Reporting Issues**
-                        - Users can report bugs, inappropriate content or other issues directly through the app's support section. TeamUp will work promptly to resolve these.
+                        - Users can report bugs, inappropriate content, or other issues directly through the app's support section. TeamUp will work promptly to resolve these.
 
                         **10. Termination of Service**
                         - TeamUp may terminate or suspend accounts that violate these terms or engage in behavior that disrupts the platform's safety and functionality.
@@ -92,14 +92,21 @@ fun TermsAndConditionsScreen(navController: NavHostController) {
     }
 }
 
+// **Updated Top Navigation Bar with Back Button and Color**
 @Composable
 fun TopNavigationBarWithBack(navController: NavHostController, title: String) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFF274472),
+            containerColor = Color(0xFF0E2C47), // **Updated Dark Blue Color**
             titleContentColor = Color.White
         ),
-        title = { Text(text = title, fontSize = 20.sp, fontWeight = FontWeight.Bold) },
+        title = {
+            Text(
+                text = title,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        },
         navigationIcon = {
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
@@ -111,6 +118,7 @@ fun TopNavigationBarWithBack(navController: NavHostController, title: String) {
         }
     )
 }
+
 
 
 

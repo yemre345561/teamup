@@ -8,11 +8,18 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.FirebaseDatabase
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize Firebase
+        FirebaseApp.initializeApp(this)
+
+        // Set Content
         setContent {
             MainScreen()
         }
@@ -25,7 +32,7 @@ fun MainScreen() {
 
     NavHost(
         navController = navController,
-        startDestination = "login" // Adjust as needed for testing
+        startDestination = "login" // Default start destination
     ) {
         // Login Screen
         composable("login") {
@@ -85,18 +92,28 @@ fun MainScreen() {
         composable("termsAndConditions") {
             TermsAndConditionsScreen(navController = navController)
         }
+
+        // Saved Posts Screen
+        composable("savedPosts") {
+            SavedPostsScreen(navController = navController) // Passed navController
+        }
+
+        // Log Out Screen
+        composable("logOut") {
+            LogoutScreen(navController = navController) // Passed navController
+        }
+
+        // **Share Post Screen** (Now Accessible Everywhere via Bottom Navigation Bar)
+        composable("sharePost") {
+            SharePostScreen(navController = navController) // Passed navController
+        }
+
+        // **Search Screen** (Accessible via Bottom Navigation Bar)
+        composable("search") {
+            SearchScreen(navController = navController) // Passed navController
+        }
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -22,9 +22,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavHostController
+import com.google.firebase.database.FirebaseDatabase
 
 @Composable
 fun SignUpScreen(userType: String, navController: NavHostController) {
+    // State variables for input fields
     var name by remember { mutableStateOf("") }
     var surname by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -33,6 +35,7 @@ fun SignUpScreen(userType: String, navController: NavHostController) {
     var extraInfo2 by remember { mutableStateOf("") }
     var gender by remember { mutableStateOf("") }
     var cvFileUri by remember { mutableStateOf<Uri?>(null) }
+    var errorMessage by remember { mutableStateOf("") } // Error message for validation
 
     // File Picker Launcher
     val filePickerLauncher = rememberLauncherForActivityResult(
@@ -41,7 +44,8 @@ fun SignUpScreen(userType: String, navController: NavHostController) {
         cvFileUri = uri
     }
 
-    val backgroundColor = Color(0xFFF8EECF)
+    // Colors
+    val backgroundColor = Color(0xFFFFFCEF)
     val inputBackground = Color(0xFFCEE6F3)
     val primaryBlue = Color(0xFF274472)
 
@@ -84,7 +88,7 @@ fun SignUpScreen(userType: String, navController: NavHostController) {
 
         // Subtitle
         Text(
-            text = "${userType} Sign In",
+            text = "$userType Sign Up",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = primaryBlue,
@@ -102,7 +106,16 @@ fun SignUpScreen(userType: String, navController: NavHostController) {
         InputField(if (userType == "Investor") "Position" else "Department", extraInfo2, { extraInfo2 = it }, inputBackground)
         InputField("Gender", gender, { gender = it }, inputBackground)
 
-        // Upload CV and Sign In Buttons
+        // Display Error Message
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+
+        // Upload CV and Sign Up Buttons
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -126,9 +139,26 @@ fun SignUpScreen(userType: String, navController: NavHostController) {
                 )
             }
 
-            // Sign In Button
+            // Sign Up Button
             Button(
-                onClick = { /* Handle sign-in logic here */ },
+                onClick = {
+                    if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                        errorMessage = "Please fill in all required fields."
+                    } else {
+                        saveUserToDatabase(
+                            userType,
+                            name,
+                            surname,
+                            email,
+                            password,
+                            extraInfo1,
+                            extraInfo2,
+                            gender,
+                            cvFileUri?.toString()
+                        )
+                        navController.navigate("home")
+                    }
+                },
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.buttonColors(containerColor = primaryBlue),
                 modifier = Modifier
@@ -136,22 +166,43 @@ fun SignUpScreen(userType: String, navController: NavHostController) {
                     .padding(start = 8.dp)
                     .height(48.dp)
             ) {
-                Text("Sign in", color = Color.White, fontSize = 16.sp)
+                Text("Sign Up", color = Color.White, fontSize = 16.sp)
             }
-        }
-
-        // Display Selected CV File Name
-        if (cvFileUri != null) {
-            Text(
-                text = "Selected File: ${cvFileUri?.lastPathSegment}",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray,
-                modifier = Modifier.padding(top = 4.dp)
-            )
         }
     }
 }
 
+// Save User Data to Firebase
+fun saveUserToDatabase(
+    userType: String,
+    name: String,
+    surname: String,
+    email: String,
+    password: String,
+    extraInfo1: String,
+    extraInfo2: String,
+    gender: String,
+    cvUri: String?
+) {
+    val database = FirebaseDatabase.getInstance().getReference("users")
+    val userId = database.push().key ?: return
+
+    val userData = mapOf(
+        "userType" to userType,
+        "name" to name,
+        "surname" to surname,
+        "email" to email,
+        "password" to password,
+        "extraInfo1" to extraInfo1,
+        "extraInfo2" to extraInfo2,
+        "gender" to gender,
+        "cvUri" to (cvUri ?: "Not Provided")
+    )
+
+    database.child(userId).setValue(userData)
+}
+
+// InputField
 @Composable
 fun InputField(
     placeholder: String,
@@ -170,12 +221,11 @@ fun InputField(
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = backgroundColor,
-            unfocusedContainerColor = backgroundColor,
-            focusedBorderColor = Color.Transparent,
-            unfocusedBorderColor = Color.Transparent
+            unfocusedContainerColor = backgroundColor
         )
     )
 }
+
 
 
 

@@ -19,7 +19,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF274472))
+            .background(Color(0xFF0E2C47))
             .height(65.dp), // Navigation Bar Height
         contentAlignment = Alignment.Center
     ) {
@@ -49,22 +49,14 @@ fun BottomNavigationBar(navController: NavHostController) {
             }
 
             // Add Post Button (Centered with smaller circle)
-            Box(
-                modifier = Modifier
-                    .size(48.dp) // Smaller circle size
-                    .shadow(4.dp, CircleShape)
-                    .background(Color(0xFFF8EECF), shape = CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                IconButton(onClick = { navController.navigate("addPost") }) {
+            IconButton(onClick = { navController.navigate("sharePost") }) {
                     Icon(
                         imageVector = Icons.Filled.Add,
                         contentDescription = null,
-                        tint = Color(0xFF274472),
+                        tint = Color.White,
                         modifier = Modifier.size(24.dp) // Icon size
                     )
                 }
-            }
 
             // Notifications Icon
             IconButton(onClick = { navController.navigate("notifications") }) {

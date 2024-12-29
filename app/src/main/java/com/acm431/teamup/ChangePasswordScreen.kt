@@ -17,8 +17,9 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun ChangePasswordScreen(navController: NavHostController) {
-    val backgroundColor = Color(0xFFF8EECF) // Background color
-    val primaryBlue = Color(0xFF274472)    // Primary blue for buttons and titles
+    val backgroundColor = Color(0xFFFFFCEF) // Background color
+    val primaryBlue = Color(0xFF274472)    // Primary blue for buttons
+    val topBarColor = Color(0xFF0E2C47)   // **Updated Top Bar Color**
 
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
@@ -42,8 +43,9 @@ fun ChangePasswordScreen(navController: NavHostController) {
                         )
                     }
                 },
+                // **Top Bar Color Updated Here**
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = primaryBlue
+                    containerColor = topBarColor // Updated to Dark Blue Shade
                 )
             )
         },
@@ -57,7 +59,7 @@ fun ChangePasswordScreen(navController: NavHostController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Old Password Field
+            // **Old Password Field**
             OutlinedTextField(
                 value = oldPassword,
                 onValueChange = { oldPassword = it },
@@ -72,7 +74,7 @@ fun ChangePasswordScreen(navController: NavHostController) {
                 )
             )
 
-            // New Password Field
+            // **New Password Field**
             OutlinedTextField(
                 value = newPassword,
                 onValueChange = { newPassword = it },
@@ -87,7 +89,7 @@ fun ChangePasswordScreen(navController: NavHostController) {
                 )
             )
 
-            // Update Button
+            // **Update Button**
             Button(
                 onClick = { /* Handle password update logic */ },
                 colors = ButtonDefaults.buttonColors(containerColor = primaryBlue),
@@ -100,6 +102,7 @@ fun ChangePasswordScreen(navController: NavHostController) {
         }
     }
 }
+
 
 
 

@@ -21,7 +21,7 @@ import androidx.navigation.NavHostController
 @Composable
 fun UserTypeSelectionScreen(navController: NavHostController, onUserTypeSelected: (String) -> Unit) {
     // Background color from the login screen
-    val backgroundColor = Color(0xFFF8EECF) // Exact match
+    val backgroundColor = Color(0xFFFFFCEF) // Exact match
     val primaryBlue = Color(0xFF274472)
 
     Column(
