@@ -14,42 +14,24 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.Image
+
 
 @Composable
 fun ChangePasswordScreen(navController: NavHostController) {
-    val backgroundColor = Color(0xFFFFFCEF) // Background color
+    val backgroundColor = Color(0xFFFFFCEF) // Light cream background
     val primaryBlue = Color(0xFF274472)    // Primary blue for buttons
-    val topBarColor = Color(0xFF0E2C47)   // **Updated Top Bar Color**
 
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Change Password",
-                        color = Color.White,
-                        fontSize = 20.sp
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) { // Navigate back
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = Color.White
-                        )
-                    }
-                },
-                // **Top Bar Color Updated Here**
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = topBarColor // Updated to Dark Blue Shade
-                )
-            )
+            ChangePasswordTopBar(navController) // **Reusing Terms and Conditions Top Bar Logic**
         },
-        bottomBar = { BottomNavigationBar(navController) } // Use BottomNavigationBar from file
+        bottomBar = { BottomNavigationBar(navController) } // Bottom navigation bar
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -102,6 +84,65 @@ fun ChangePasswordScreen(navController: NavHostController) {
         }
     }
 }
+
+// **Top Bar - Same as Terms and Conditions Screen**
+@Composable
+fun ChangePasswordTopBar(navController: NavHostController) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp) // Same height as Terms and Conditions Screen
+            .background(Color(0xFF0E2C47)) // Dark blue background
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        // **Back Arrow on Left**
+        Row(
+            modifier = Modifier.align(Alignment.CenterStart),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = { navController.popBackStack() }) { // Go back
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+        }
+
+        // **Centered Logo and App Name**
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "TEAM",
+                    color = Color(0xFFF8EECF), // Light cream color
+                    fontSize = 18.sp,
+                    style = MaterialTheme.typography.labelLarge
+                )
+                Text(
+                    text = "UP",
+                    color = Color(0xFFF8EECF), // Light cream color
+                    fontSize = 18.sp,
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp)) // Space between text and logo
+            Image(
+                painter = painterResource(id = R.drawable.teamup_logo2), // Logo
+                contentDescription = "Team Up Logo",
+                modifier = Modifier.size(50.dp), // Same size as Terms Screen
+                contentScale = ContentScale.Fit
+            )
+        }
+    }
+}
+
+
 
 
 

@@ -4,26 +4,27 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.Image
+
 
 @Composable
 fun TermsAndConditionsScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
-            TopNavigationBarWithBack(
-                navController = navController,
-                title = "Terms and Conditions"
-            )
+            TermsTopBar(navController) // Top bar logic reused
         },
         bottomBar = { BottomNavigationBar(navController = navController) } // Bottom navigation bar
     ) { innerPadding ->
@@ -39,11 +40,22 @@ fun TermsAndConditionsScreen(navController: NavHostController) {
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp)
             ) {
-                // Terms and Conditions Content
+                // **Title at the Beginning of the Text Content**
+                Text(
+                    text = "Terms and Conditions",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0E2C47), // Dark Blue Title Color
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+
+                // **Terms and Conditions Content**
                 Text(
                     text = """
                         Welcome to TeamUp! By using our platform, you agree to the following terms and conditions:
-                        
+
                         **1. User Responsibilities**
                         - Users are responsible for providing accurate and up-to-date information when registering on the platform. Any incorrect details may affect the user experience or result in the suspension of services.
                         - Users must maintain a respectful and professional tone when interacting with others through the app.
@@ -64,22 +76,6 @@ fun TermsAndConditionsScreen(navController: NavHostController) {
                         - TeamUp is not responsible for disputes arising between users. We encourage users to resolve conflicts amicably.
                         - TeamUp shall not be held liable for damages resulting from the use or misuse of the app.
 
-                        **6. Service Availability**
-                        - While TeamUp aims for 24/7 service availability, occasional maintenance or technical issues may cause interruptions. Users will be notified of scheduled downtimes in advance.
-
-                        **7. Account Security**
-                        - Users are responsible for securing their account credentials. TeamUp will not be held responsible for unauthorized access resulting from user negligence.
-                        - Any suspicious activity on your account should be reported immediately to our support team.
-
-                        **8. Updates to Terms**
-                        - TeamUp reserves the right to update these terms and conditions at any time. Users will be notified of significant changes, and continued use of the platform constitutes acceptance of these updates.
-
-                        **9. Reporting Issues**
-                        - Users can report bugs, inappropriate content, or other issues directly through the app's support section. TeamUp will work promptly to resolve these.
-
-                        **10. Termination of Service**
-                        - TeamUp may terminate or suspend accounts that violate these terms or engage in behavior that disrupts the platform's safety and functionality.
-
                         Thank you for using TeamUp! We are dedicated to helping you connect, collaborate, and achieve your goals.
                     """.trimIndent(),
                     style = MaterialTheme.typography.bodyMedium,
@@ -92,32 +88,64 @@ fun TermsAndConditionsScreen(navController: NavHostController) {
     }
 }
 
-// **Updated Top Navigation Bar with Back Button and Color**
+// **Top Bar for Terms Screen with Back Arrow and Logo**
 @Composable
-fun TopNavigationBarWithBack(navController: NavHostController, title: String) {
-    TopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFF0E2C47), // **Updated Dark Blue Color**
-            titleContentColor = Color.White
-        ),
-        title = {
-            Text(
-                text = title,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
+fun TermsTopBar(navController: NavHostController) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp) // Same height as logout page
+            .background(Color(0xFF0E2C47)) // Dark blue background
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        // **Back Arrow on Left**
+        Row(
+            modifier = Modifier.align(Alignment.CenterStart),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = { navController.popBackStack() }) { // Go back
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = Color.White
+                    tint = Color.White,
+                    modifier = Modifier.size(30.dp)
                 )
             }
         }
-    )
+
+        // **Centered Logo and App Name**
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "TEAM",
+                    color = Color(0xFFF8EECF), // Light cream color
+                    fontSize = 18.sp,
+                    style = MaterialTheme.typography.labelLarge
+                )
+                Text(
+                    text = "UP",
+                    color = Color(0xFFF8EECF), // Light cream color
+                    fontSize = 18.sp,
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp)) // Space between text and logo
+            Image(
+                painter = painterResource(id = R.drawable.teamup_logo2), // Logo
+                contentDescription = "Team Up Logo",
+                modifier = Modifier.size(50.dp), // Same size as logout page
+                contentScale = ContentScale.Fit
+            )
+        }
+    }
 }
+
+
 
 
 
