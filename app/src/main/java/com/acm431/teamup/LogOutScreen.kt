@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +24,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.layout.ContentScale
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.acm431.teamup.data.repository.AuthRepository
+import com.acm431.teamup.viewmodel.AuthViewModel
+import com.acm431.teamup.viewmodel.AuthViewModelFactory
 
 
 class LogOutScreen : ComponentActivity() {
@@ -38,6 +43,10 @@ class LogOutScreen : ComponentActivity() {
 // **Main Logout Screen**
 @Composable
 fun LogoutScreen(navController: NavHostController) {
+    val authRepository = remember { AuthRepository() }
+    val authViewModel: AuthViewModel = viewModel(
+        factory = AuthViewModelFactory(authRepository)
+    )
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -75,7 +84,12 @@ fun LogoutScreen(navController: NavHostController) {
             ) {
                 // **Yes Button**
                 Button(
-                    onClick = { navController.navigate("login") }, // Navigate to Login
+                    onClick = {
+                        authViewModel.logOut()
+                        navController.navigate("login") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                     shape = RoundedCornerShape(50),
                     modifier = Modifier

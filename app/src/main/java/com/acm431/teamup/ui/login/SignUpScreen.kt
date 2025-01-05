@@ -1,4 +1,4 @@
-package com.acm431.teamup
+package com.acm431.teamup.ui.login
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -17,16 +17,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.google.firebase.database.FirebaseDatabase
+import com.acm431.teamup.R
+import com.acm431.teamup.data.repository.AuthRepository
+import com.acm431.teamup.viewmodel.AuthViewModel
+import com.acm431.teamup.viewmodel.AuthViewModelFactory
+import com.acm431.teamup.viewmodel.RegisterState
 
 @Composable
 fun SignUpScreen(userType: String, navController: NavHostController) {
-    // State variables for input fields
+    // ViewModel Bağlantısı
+    val authRepository = remember { AuthRepository() }
+    val authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(authRepository))
+
+    // State Değişkenleri
     var name by remember { mutableStateOf("") }
     var surname by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -35,16 +44,17 @@ fun SignUpScreen(userType: String, navController: NavHostController) {
     var extraInfo2 by remember { mutableStateOf("") }
     var gender by remember { mutableStateOf("") }
     var cvFileUri by remember { mutableStateOf<Uri?>(null) }
-    var errorMessage by remember { mutableStateOf("") } // Error message for validation
 
-    // File Picker Launcher
+    val registerState by authViewModel.registerState.collectAsState()
+
+    // Dosya Seçici
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         cvFileUri = uri
     }
 
-    // Colors
+    // Renkler
     val backgroundColor = Color(0xFFFFFCEF)
     val inputBackground = Color(0xFFCEE6F3)
     val primaryBlue = Color(0xFF274472)
@@ -53,76 +63,74 @@ fun SignUpScreen(userType: String, navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundColor)
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Back Button
+        // Geri Butonu
         IconButton(
             onClick = { navController.popBackStack() },
             modifier = Modifier
+                .align(Alignment.Start)
                 .size(48.dp)
-                .padding(top = 8.dp, bottom = 16.dp)
+                .padding(top = 8.dp)
         ) {
             Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = primaryBlue)
         }
 
         // Logo
-        Spacer(modifier = Modifier.height(16.dp))
         Image(
             painter = painterResource(id = R.drawable.teamup_logo),
             contentDescription = "TeamUp Logo",
             modifier = Modifier
-                .size(160.dp)
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 8.dp),
+                .size(140.dp)
+                .padding(bottom = 16.dp),
             contentScale = ContentScale.Fit
         )
 
-        // Title
+        // Başlık
         Text(
             text = "TeamUp",
             fontSize = 36.sp,
             fontWeight = FontWeight.Bold,
             color = primaryBlue,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        // Subtitle
         Text(
             text = "$userType Sign Up",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = primaryBlue,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Input Fields
+        // Input Alanları
         InputField("Name", name, { name = it }, inputBackground)
         InputField("Surname", surname, { surname = it }, inputBackground)
         InputField("E-Mail", email, { email = it }, inputBackground, KeyboardType.Email)
         InputField("Password", password, { password = it }, inputBackground, KeyboardType.Password)
-        InputField(if (userType == "Investor") "Company" else "University", extraInfo1, { extraInfo1 = it }, inputBackground)
-        InputField(if (userType == "Investor") "Position" else "Department", extraInfo2, { extraInfo2 = it }, inputBackground)
+        InputField(
+            if (userType == "Investor") "Company" else "University",
+            extraInfo1,
+            { extraInfo1 = it },
+            inputBackground
+        )
+        InputField(
+            if (userType == "Investor") "Position" else "Department",
+            extraInfo2,
+            { extraInfo2 = it },
+            inputBackground
+        )
         InputField("Gender", gender, { gender = it }, inputBackground)
 
-        // Display Error Message
-        if (errorMessage.isNotEmpty()) {
-            Text(
-                text = errorMessage,
-                color = Color.Red,
-                modifier = Modifier.padding(8.dp)
-            )
-        }
-
-        // Upload CV and Sign Up Buttons
+        // Dosya Seçici ve Kayıt Butonları
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .padding(top = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Upload CV Button
             Button(
                 onClick = { filePickerLauncher.launch("application/pdf") },
                 shape = RoundedCornerShape(50),
@@ -135,29 +143,23 @@ fun SignUpScreen(userType: String, navController: NavHostController) {
                 Text(
                     text = if (cvFileUri == null) "Upload CV" else "CV Selected",
                     color = primaryBlue,
-                    fontSize = 16.sp
+                    fontSize = 14.sp
                 )
             }
 
-            // Sign Up Button
             Button(
                 onClick = {
-                    if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                        errorMessage = "Please fill in all required fields."
-                    } else {
-                        saveUserToDatabase(
-                            userType,
-                            name,
-                            surname,
-                            email,
-                            password,
-                            extraInfo1,
-                            extraInfo2,
-                            gender,
-                            cvFileUri?.toString()
-                        )
-                        navController.navigate("home")
-                    }
+                    authViewModel.register(
+                        userType,
+                        name,
+                        surname,
+                        email,
+                        password,
+                        extraInfo1,
+                        extraInfo2,
+                        gender,
+                        cvFileUri
+                    )
                 },
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.buttonColors(containerColor = primaryBlue),
@@ -166,43 +168,33 @@ fun SignUpScreen(userType: String, navController: NavHostController) {
                     .padding(start = 8.dp)
                     .height(48.dp)
             ) {
-                Text("Sign Up", color = Color.White, fontSize = 16.sp)
+                Text("Sign Up", color = Color.White, fontSize = 14.sp)
             }
+        }
+
+        // Durum Mesajları
+        when (registerState) {
+            is RegisterState.Loading -> {
+                CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
+            }
+            is RegisterState.Success -> {
+                navController.navigate("home") {
+                    popUpTo("signup") { inclusive = true }
+                }
+            }
+            is RegisterState.Error -> {
+                Text(
+                    text = (registerState as RegisterState.Error).message,
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+            else -> {}
         }
     }
 }
 
-// Save User Data to Firebase
-fun saveUserToDatabase(
-    userType: String,
-    name: String,
-    surname: String,
-    email: String,
-    password: String,
-    extraInfo1: String,
-    extraInfo2: String,
-    gender: String,
-    cvUri: String?
-) {
-    val database = FirebaseDatabase.getInstance().getReference("users")
-    val userId = database.push().key ?: return
-
-    val userData = mapOf(
-        "userType" to userType,
-        "name" to name,
-        "surname" to surname,
-        "email" to email,
-        "password" to password,
-        "extraInfo1" to extraInfo1,
-        "extraInfo2" to extraInfo2,
-        "gender" to gender,
-        "cvUri" to (cvUri ?: "Not Provided")
-    )
-
-    database.child(userId).setValue(userData)
-}
-
-// InputField
 @Composable
 fun InputField(
     placeholder: String,
@@ -225,10 +217,3 @@ fun InputField(
         )
     )
 }
-
-
-
-
-
-
-

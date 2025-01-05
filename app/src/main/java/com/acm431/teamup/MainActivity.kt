@@ -5,11 +5,30 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.acm431.teamup.data.repository.AuthRepository
+import com.acm431.teamup.data.repository.PostRepository
+import com.acm431.teamup.ui.home.HomeScreen
+import com.acm431.teamup.ui.login.LoginScreen
+import com.acm431.teamup.ui.login.SignUpScreen
+import com.acm431.teamup.ui.notifications.NotificationsPage
+import com.acm431.teamup.ui.post.SavedPostsScreen
+import com.acm431.teamup.ui.post.SharePostScreen
+import com.acm431.teamup.ui.profile.ProfileScreen
+import com.acm431.teamup.ui.search.SearchScreen
+import com.acm431.teamup.ui.setttings.ChangePasswordScreen
+import com.acm431.teamup.ui.setttings.SettingsScreen
+import com.acm431.teamup.ui.setttings.TermsAndConditionsScreen
+import com.acm431.teamup.viewmodel.AuthViewModel
+import com.acm431.teamup.viewmodel.AuthViewModelFactory
+import com.acm431.teamup.viewmodel.PostViewModel
+import com.acm431.teamup.viewmodel.PostViewModelFactory
 import com.google.firebase.FirebaseApp
-import com.google.firebase.database.FirebaseDatabase
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -29,6 +48,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+    val postRepository = remember { PostRepository() }
+    val authRepository = remember { AuthRepository() }
+
+    val postViewModel: PostViewModel = viewModel(factory = PostViewModelFactory(postRepository))
+    val authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(authRepository))
 
     NavHost(
         navController = navController,
@@ -68,9 +92,14 @@ fun MainScreen() {
             HomeScreen(navController = navController)
         }
 
-        // Profile Screen
+
         composable("profile") {
-            ProfileScreen(navController = navController)
+            ProfileScreen(navController, userId = null) // Kendi profiliniz
+        }
+
+        composable("profile/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId")
+            ProfileScreen(navController, userId)
         }
 
         // Settings Screen
@@ -95,7 +124,7 @@ fun MainScreen() {
 
         // Saved Posts Screen
         composable("savedPosts") {
-            SavedPostsScreen(navController = navController) // Passed navController
+            SavedPostsScreen(navController = navController, postViewModel = postViewModel, authRepository = authRepository)
         }
 
         // Log Out Screen

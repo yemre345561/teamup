@@ -76,6 +76,8 @@ dependencies {
     implementation("androidx.compose.material:material") // Material 1 for fallback compatibility
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.navigation:navigation-compose:2.7.3")
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation ("com.google.firebase:firebase-storage-ktx")
 
     // Testing Dependencies
     testImplementation("junit:junit:4.13.2")

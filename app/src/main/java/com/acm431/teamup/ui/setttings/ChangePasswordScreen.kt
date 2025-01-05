@@ -1,4 +1,4 @@
-package com.acm431.teamup
+package com.acm431.teamup.ui.setttings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,6 +17,13 @@ import androidx.navigation.NavHostController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.Image
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.acm431.teamup.BottomNavigationBar
+import com.acm431.teamup.R
+import com.acm431.teamup.data.repository.AuthRepository
+import com.acm431.teamup.viewmodel.AuthViewModel
+import com.acm431.teamup.viewmodel.AuthViewModelFactory
+import com.acm431.teamup.viewmodel.ChangePasswordState
 
 
 @Composable
@@ -24,8 +31,29 @@ fun ChangePasswordScreen(navController: NavHostController) {
     val backgroundColor = Color(0xFFFFFCEF) // Light cream background
     val primaryBlue = Color(0xFF274472)    // Primary blue for buttons
 
+    val authRepository = remember { AuthRepository() }
+    val authViewModel: AuthViewModel = viewModel(
+        factory = AuthViewModelFactory(authRepository)
+    )
+
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
+    val changePasswordState by authViewModel.passwordChangeState.collectAsState()
+
+    LaunchedEffect(changePasswordState) {
+        when (changePasswordState) {
+            is ChangePasswordState.Success -> {
+                errorMessage = ""
+                navController.popBackStack()
+                println("Password successfully changed!")
+            }
+            is ChangePasswordState.Error -> {
+                errorMessage = (changePasswordState as ChangePasswordState.Error).message
+            }
+            else -> {}
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -70,16 +98,24 @@ fun ChangePasswordScreen(navController: NavHostController) {
                     unfocusedBorderColor = Color.Gray
                 )
             )
-
+            if (errorMessage.isNotEmpty()) {
+                Text(errorMessage, color = Color.Red)
+            }
             // **Update Button**
             Button(
-                onClick = { /* Handle password update logic */ },
+                onClick = {
+                    authViewModel.changePassword(oldPassword, newPassword)
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = primaryBlue),
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
                     .padding(bottom = 16.dp)
             ) {
                 Text("Update", color = Color.White)
+            }
+            if (changePasswordState is ChangePasswordState.Loading) {
+                Spacer(modifier = Modifier.height(16.dp))
+                CircularProgressIndicator()
             }
         }
     }

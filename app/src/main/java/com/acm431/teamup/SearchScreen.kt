@@ -1,35 +1,76 @@
-package com.acm431.teamup
+package com.acm431.teamup.ui.search
 
-// Required Imports
+import SearchViewModel
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.compose.ui.text.input.ImeAction
-
+import coil.compose.AsyncImage
+import com.acm431.teamup.BottomNavigationBar
+import com.acm431.teamup.TopNavigationBar
+import com.acm431.teamup.data.model.Comment
+import com.acm431.teamup.data.model.Post
+import com.acm431.teamup.data.repository.AuthRepository
+import com.acm431.teamup.data.repository.PostRepository
+import com.acm431.teamup.ui.home.HomePostItem
+import com.acm431.teamup.ui.home.timeAgo
+import com.acm431.teamup.viewmodel.AuthViewModel
+import com.acm431.teamup.viewmodel.AuthViewModelFactory
+import com.acm431.teamup.viewmodel.PostViewModel
+import com.acm431.teamup.viewmodel.PostViewModelFactory
+import com.acm431.teamup.viewmodel.SearchViewModelFactory
 
 @Composable
 fun SearchScreen(navController: NavHostController) {
-    var searchText by remember { mutableStateOf("") }
-    val searchHistory = remember { mutableStateListOf<String>() }
-    val searchResults = remember { mutableStateListOf<SearchResult>() }
+    // Repository ve ViewModel Tanımları
+    val postRepository = remember { PostRepository() }
+    val authRepository = remember { AuthRepository() }
+    val postViewModel: PostViewModel = viewModel(factory = PostViewModelFactory(postRepository))
+    val authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(authRepository))
+    val searchViewModel: SearchViewModel = viewModel(factory = SearchViewModelFactory(postRepository))
+
+    // State Değişkenleri
+    val userDetails by authViewModel.userDetails.collectAsState()
+    val searchText = remember { mutableStateOf("") }
+    val searchResults by searchViewModel.searchResults.collectAsState()
+    val searchHistory by searchViewModel.searchHistory.collectAsState()
+    val isLoading by searchViewModel.isLoading.collectAsState()
+    val savedPosts by postViewModel.savedPosts.collectAsState()
+
+    // Kullanıcı Detayları Yükle
+    LaunchedEffect(Unit) {
+        authViewModel.loadUserDetails()
+        postViewModel.loadSavedPosts(authRepository.getCurrentUserId() ?: "Unknown")
+    }
 
     Scaffold(
-        topBar = { TopNavigationBar() }, // Top Bar
-        bottomBar = { BottomNavigationBar(navController) }, // Bottom Bar
-        containerColor = Color(0xFFFFFBEF) // Background color
+        topBar = { TopNavigationBar() },
+        bottomBar = { BottomNavigationBar(navController) },
+        containerColor = Color(0xFFFFFBEF)
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -39,8 +80,8 @@ fun SearchScreen(navController: NavHostController) {
         ) {
             // **Search Bar**
             OutlinedTextField(
-                value = searchText,
-                onValueChange = { query -> searchText = query },
+                value = searchText.value,
+                onValueChange = { query -> searchText.value = query },
                 label = { Text("Search") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -49,10 +90,8 @@ fun SearchScreen(navController: NavHostController) {
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(
                     onSearch = {
-                        if (searchText.isNotEmpty() && !searchHistory.contains(searchText)) {
-                            searchHistory.add(searchText)
-                            searchResults.clear()
-                            searchResults.addAll(performSearch(searchText))
+                        if (searchText.value.isNotEmpty()) {
+                            searchViewModel.performSearch(searchText.value, authRepository.getCurrentUserId() ?: "Unknown")
                         }
                     }
                 )
@@ -60,161 +99,122 @@ fun SearchScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // **Search History**
-            for (keyword in searchHistory) {
-                SearchHistoryItem(
-                    keyword = keyword,
-                    onDelete = { searchHistory.remove(keyword) }
+            // **Keywords Section**
+            if (searchHistory.isNotEmpty()) {
+                Text(
+                    text = "Keywords",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                searchHistory.forEach { keyword ->
+                    SearchHistoryItem(
+                        keyword = keyword,
+                        onClick = { searchViewModel.performSearch(keyword, authRepository.getCurrentUserId() ?: "Unknown") },
+                        onDelete = { searchViewModel.deleteSearchKeyword(authRepository.getCurrentUserId() ?: "Unknown", keyword) }
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // **Search Results**
-            if (searchResults.isEmpty()) {
-                Text(
-                    text = "No results found",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             } else {
-                for (result in searchResults) {
-                    SearchResultItem(
-                        username = result.username,
-                        userType = result.userType,
-                        timeAgo = result.timeAgo,
-                        description = result.description,
-                        likes = 234,
-                        comments = 32
+                if (searchResults.isEmpty()) {
+                    Text(
+                        text = "No results found",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                } else {
+                    LazyColumn {
+                        items(searchResults) { post ->
+                            LaunchedEffect(post.userId) {
+                                postViewModel.loadUserProfileImage(post.userId)
+                            }
+                            HomePostItem(
+                                post = post,
+                                currentUserId = authRepository.getCurrentUserId() ?: "Unknown",
+                                profileImageUrl = postViewModel.userProfileImages.collectAsState().value[post.userId] ?: "https://via.placeholder.com/150",
+                                isSaved = savedPosts.contains(post.id),
+                                onLike = {
+                                    postViewModel.toggleLike(
+                                        post.id,
+                                        authRepository.getCurrentUserId() ?: "Unknown",
+                                        "${userDetails?.get("name") ?: "Unknown"} ${userDetails?.get("surname") ?: ""}",
+                                        post.userId,
+                                        userDetails?.get("profileImageUrl") ?: "https://picsum.photos/200"
+                                    )
+                                },
+                                onComment = { commentText ->
+                                    val comment = Comment(
+                                        userId = authRepository.getCurrentUserId() ?: "Unknown",
+                                        username = "${userDetails?.get("name") ?: "Unknown"} ${userDetails?.get("surname") ?: ""}",
+                                        comment = commentText
+                                    )
+                                    postViewModel.addComment(
+                                        post.id,
+                                        comment,
+                                        post.userId,
+                                        realUserId = authRepository.getCurrentUserId() ?: "Unknown",
+                                        userDetails?.get("profileImageUrl") ?: "https://picsum.photos/200"
+                                    )
+                                },
+                                onSave = {
+                                    postViewModel.toggleSavePost(
+                                        post.id,
+                                        authRepository.getCurrentUserId() ?: "Unknown"
+                                    )
+                                },
+                                onNavigateToProfile = { userId ->
+                                    if (userId == authRepository.getCurrentUserId()) {
+                                        navController.navigate("profile")
+                                    } else {
+                                        navController.navigate("profile/$userId")
+                                    }
+                                },
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-// **Search History Item Component**
+
+
 @Composable
-fun SearchHistoryItem(keyword: String, onDelete: () -> Unit) {
+fun SearchHistoryItem(keyword: String, onClick: () -> Unit, onDelete: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .background(Color.White)
+            .clickable { onClick() }
             .padding(8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = keyword, style = MaterialTheme.typography.bodyMedium)
-        Button(onClick = onDelete) {
-            Text("Delete")
+        IconButton(onClick = onDelete) {
+            Icon(imageVector = Icons.Default.Close, contentDescription = "Delete")
         }
     }
 }
 
-// **Search Result Item Component**
-@Composable
-fun SearchResultItem(
-    username: String,
-    userType: String,
-    timeAgo: String,
-    description: String,
-    likes: Int,
-    comments: Int
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            // **Header Row**
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(text = username, style = MaterialTheme.typography.bodyLarge)
-                    Text(text = userType, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                }
-                Text(
-                    text = timeAgo,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // **Description**
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Black
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // **Actions Row**
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                IconButton(onClick = { }) {
-                    Icon(
-                        imageVector = Icons.Default.FavoriteBorder,
-                        contentDescription = "Like",
-                        tint = Color.Red
-                    )
-                }
-                IconButton(onClick = { }) {
-                    Icon(
-                        imageVector = Icons.Default.Chat,
-                        contentDescription = "Comment",
-                        tint = Color.Blue
-                    )
-                }
-                IconButton(onClick = { }) {
-                    Icon(
-                        imageVector = Icons.Default.BookmarkBorder,
-                        contentDescription = "Save",
-                        tint = Color.Green
-                    )
-                }
-            }
-        }
+fun formatTimeAgo(timestamp: Long): String {
+    val now = System.currentTimeMillis()
+    val difference = now - timestamp
+    return when {
+        difference < 60_000 -> "Just now"
+        difference < 3_600_000 -> "${difference / 60_000} minutes ago"
+        difference < 86_400_000 -> "${difference / 3_600_000} hours ago"
+        else -> "${difference / 86_400_000} days ago"
     }
 }
-
-// **Sample Data**
-data class SearchResult(
-    val username: String,
-    val userType: String,
-    val timeAgo: String,
-    val description: String
-)
-
-fun performSearch(query: String): List<SearchResult> {
-    return if (query.isNotEmpty()) {
-        listOf(
-            SearchResult("Joshua Smith", "Investor", "2h ago", "Looking for a co-founder for my startup."),
-            SearchResult("Alice Johnson", "Designer", "5h ago", "Looking for freelance design opportunities."),
-            SearchResult("Charlie Lee", "Developer", "1d ago", "Searching for a full-stack project to collaborate on.")
-        ).filter { it.username.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true) }
-    } else {
-        emptyList()
-    }
-}
-
-
-
-
-
 

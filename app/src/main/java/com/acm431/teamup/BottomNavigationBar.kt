@@ -69,10 +69,15 @@ fun BottomNavigationBar(navController: NavHostController) {
             }
 
             // Profile Icon
-            IconButton(onClick = { navController.navigate("profile") }) {
+            IconButton(onClick = {
+                navController.navigate("profile") {
+                    popUpTo(navController.graph.startDestinationId) { inclusive = false }
+                    launchSingleTop = true
+                }
+            }) {
                 Icon(
                     imageVector = Icons.Filled.Person,
-                    contentDescription = null,
+                    contentDescription = "Profile",
                     tint = Color.White,
                     modifier = Modifier.size(28.dp)
                 )

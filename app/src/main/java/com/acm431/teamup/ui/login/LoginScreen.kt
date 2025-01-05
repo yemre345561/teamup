@@ -1,4 +1,4 @@
-package com.acm431.teamup
+package com.acm431.teamup.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,18 +15,57 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.acm431.teamup.R
+import com.acm431.teamup.data.repository.AuthRepository
+import com.acm431.teamup.viewmodel.AuthViewModel
+import com.acm431.teamup.viewmodel.AuthViewModelFactory
+import com.acm431.teamup.viewmodel.LoginState
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
-    var username by remember { mutableStateOf("") }
+    // AuthRepository oluştur
+    val authRepository = remember { AuthRepository() }
+
+    // AuthViewModel oluştur (Factory ile)
+    val authViewModel: AuthViewModel = viewModel(
+        factory = AuthViewModelFactory(authRepository)
+    )
+
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // Correct Background Color
-    val backgroundColor = Color(0xFFFFFCEF) // Slightly lighter shade
-    val inputBackground = Color(0xFFD2E4F3) // Light blue input fields
-    val primaryBlue = Color(0xFF274472)     // Dark blue for button and text
+    val loginState by authViewModel.loginState.collectAsState()
+    val autoLoginState by authViewModel.autoLoginState.collectAsState()
 
+    val backgroundColor = Color(0xFFFFFCEF)
+    val inputBackground = Color(0xFFD2E4F3)
+    val primaryBlue = Color(0xFF274472)
+
+    // 🚀 **Auto Login Kontrolü**
+    LaunchedEffect(autoLoginState) {
+        if (autoLoginState) {
+            navController.navigate("home") {
+                popUpTo("login") { inclusive = true }
+            }
+        }
+    }
+
+    // 🚨 **Auto Login Yükleniyor Ekranı**
+    if (autoLoginState) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    // 📝 **Login Ekranı**
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,32 +74,32 @@ fun LoginScreen(navController: NavHostController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Logo (Increased Size)
+        // Logo
         Image(
-            painter = painterResource(id = R.drawable.teamup_logo), // Replace with actual resource
+            painter = painterResource(id = R.drawable.teamup_logo),
             contentDescription = "TeamUp Logo",
             modifier = Modifier
-                .size(140.dp) // Increased size for logo
+                .size(140.dp)
                 .padding(bottom = 16.dp),
             contentScale = ContentScale.Fit
         )
 
-        // Title (Bigger & Bold)
+        // Title
         Text(
             text = "TeamUp",
-            fontSize = 36.sp, // Bigger font size
-            fontWeight = FontWeight.Bold, // Make bold
+            fontSize = 36.sp,
+            fontWeight = FontWeight.Bold,
             color = primaryBlue,
             textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Username Input Field
+        // Email Input
         TextField(
-            value = username,
-            onValueChange = { username = it },
-            placeholder = { Text("Username", color = Color.Gray) },
+            value = email,
+            onValueChange = { email = it },
+            placeholder = { Text("Email", color = Color.Gray) },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = inputBackground,
                 unfocusedContainerColor = inputBackground,
@@ -76,7 +115,7 @@ fun LoginScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Password Input Field
+        // Password Input
         TextField(
             value = password,
             onValueChange = { password = it },
@@ -99,20 +138,32 @@ fun LoginScreen(navController: NavHostController) {
         // Login Button
         Button(
             onClick = {
-                navController.navigate("home")
+                authViewModel.login(email, password)
             },
             colors = ButtonDefaults.buttonColors(containerColor = primaryBlue),
             shape = RoundedCornerShape(25.dp),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp),
             modifier = Modifier
                 .fillMaxWidth(0.6f)
                 .height(50.dp)
         ) {
-            Text(
-                text = "Log in",
-                fontSize = 18.sp,
-                color = Color.White
-            )
+            Text(text = "Log in", fontSize = 18.sp, color = Color.White)
+        }
+
+        // Login State Feedback
+        when (loginState) {
+            is LoginState.Loading -> CircularProgressIndicator()
+            is LoginState.Success -> {
+                navController.navigate("home") { popUpTo("login") { inclusive = true } }
+            }
+            is LoginState.Error -> {
+                Text(
+                    text = (loginState as LoginState.Error).message,
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+            else -> {}
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -121,31 +172,12 @@ fun LoginScreen(navController: NavHostController) {
         OutlinedButton(
             onClick = { navController.navigate("userTypeSelection") },
             shape = RoundedCornerShape(25.dp),
-            border = ButtonDefaults.outlinedButtonBorder.copy(width = 1.dp),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = primaryBlue),
             modifier = Modifier
                 .fillMaxWidth(0.4f)
                 .height(40.dp)
         ) {
-            Text(
-                text = "Register",
-                fontSize = 14.sp
-            )
+            Text(text = "Register", fontSize = 14.sp)
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-package com.acm431.teamup
+package com.acm431.teamup.ui.setttings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,6 +18,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.Image
+import com.acm431.teamup.BottomNavigationBar
+import com.acm431.teamup.R
 
 
 @Composable

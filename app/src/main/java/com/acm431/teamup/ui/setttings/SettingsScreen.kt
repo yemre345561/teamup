@@ -1,4 +1,4 @@
-package com.acm431.teamup
+package com.acm431.teamup.ui.setttings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +18,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.acm431.teamup.BottomNavigationBar
+import com.acm431.teamup.R
 
 @Composable
 fun SettingsScreen(navController: NavHostController) {

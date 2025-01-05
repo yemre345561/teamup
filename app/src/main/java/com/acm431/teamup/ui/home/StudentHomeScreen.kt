@@ -1,4 +1,4 @@
-package com.acm431.teamup
+package com.acm431.teamup.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.acm431.teamup.BottomNavigationBar
 
 @Composable
 fun StudentHomeScreen(navController: NavHostController) {
