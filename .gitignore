@@ -1,15 +1,48 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+build/
+
+# Gradle
+.gradle/
 local.properties
+
+# Android Studio / IntelliJ
+*.iml
+.idea/
+.navigation/
+captures/
+
+# Native build
+.externalNativeBuild/
+.cxx/
+
+# Logs and profiling
+*.log
+*.hprof
+
+# OS
+.DS_Store
+
+# Lint
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+
+# google-services.json is intentionally tracked for this course prototype.
+# Review API key restrictions before sharing or deploying the project.
+# Do not commit a replacement file from a personal Firebase project.
