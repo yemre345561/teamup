@@ -5,7 +5,6 @@ data class Investor(
     val name: String = "",
     val surname: String = "",
     val email: String = "",
-    val password: String = "",
     val company: String = "",
     val position: String = "",
     val gender: String = ""

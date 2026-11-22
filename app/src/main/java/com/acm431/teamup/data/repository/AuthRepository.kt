@@ -33,11 +33,15 @@ class AuthRepository {
             // Eski şifreyi doğrula
             auth.signInWithEmailAndPassword(email, oldPassword).await()
 
-            // Yeni şifreyi güncelle
             user.updatePassword(newPassword).await()
 
-            // Veritabanında şifreyi güncelle
-            database.child(user.uid).child("password").setValue(newPassword).await()
+            // Do not keep the password in Realtime Database. Remove any older copy.
+            // Auth has already changed, so a failed cleanup does not undo the update.
+            try {
+                database.child(user.uid).child("password").removeValue().await()
+            } catch (cleanup: Exception) {
+                println("Could not remove stored password: ${cleanup.message}")
+            }
 
             true
         } catch (e: Exception) {
@@ -73,7 +77,6 @@ class AuthRepository {
                 "name" to name,
                 "surname" to surname,
                 "email" to email,
-                "password" to password,
                 "extraInfo1" to extraInfo1,
                 "extraInfo2" to extraInfo2,
                 "gender" to gender,

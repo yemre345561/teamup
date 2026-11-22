@@ -5,7 +5,6 @@ data class Student(
     val name: String = "",
     val surname: String = "",
     val email: String = "",
-    val password: String = "",
     val university: String = "",
     val department: String = "",
     val gender: String = ""
